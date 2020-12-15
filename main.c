@@ -9,8 +9,8 @@ int main(int argc, char **argv, char **env)
 
 
     pid_t pid;
-    int read, tty = 1, ret, status; 
-    char *line, *cpy, *arg = NULL, **args = NULL;
+    int read, tty = 1, ret = 0, status = 0; 
+    char *line = NULL, *cpy = NULL, *arg = NULL, **args = NULL;
     size_t len = 0;
     args_t *arguments = NULL;
 
@@ -28,19 +28,12 @@ int main(int argc, char **argv, char **env)
 
         /* Parse */
 
-        cpy = strdup(line); // TO DO: free this memory
+        cpy = strdup(line); 
 
-        for (; (arg = strtok(cpy, " \t\n")); cpy = NULL)
-        {
+        for (; (arg = strtok(cpy, " \t\n")); cpy = NULL, add(&arguments, arg)) 
             if(arg == NULL)
-            {
                 break;
-            }
-            add(&arguments, arg);
-        }
-        
         args = transform(&arguments);
-        
         
         /* execute */ 
 
@@ -57,7 +50,13 @@ int main(int argc, char **argv, char **env)
         else {  
             wait(&status);
         }
+
+
+        /* clean */
+
+        deleteArgs(arguments),free(line), free(args), free(cpy);
         arguments = NULL;
+        
     }while(1);
 
     return (0);

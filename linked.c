@@ -16,7 +16,7 @@ args_t *add(args_t **head, char* arg)
     if(node == NULL)
         return (NULL);
 
-    node->arg = strdup(arg);
+    node->arg = arg;
     node->next = NULL;
 
     if(*head == NULL)
@@ -32,36 +32,18 @@ args_t *add(args_t **head, char* arg)
 
     return (aux);
 }
-
-size_t print(args_t *head)
+void deleteArgs(args_t *head)
 {
-    int i;
+	args_t *node, *next;
 
-    for (i = 0; head; i++)
-    {
-        printf("argument -> {%s}\n", head->arg);
-        head = head->next;
-    }
-        
-    printf("number of args ->{%d}\n", i);
-    return(i);
-}
+	node = head;
 
-char **transform(args_t **head)
-{
-
-    int i;
-    args_t *h = *head;
-    char **arguments;
-    
-    for (i = 0; h; i++)
-        h = h->next;
-    arguments = malloc((i + 1) * sizeof(char *));
-    h = *head;
-    for (i = 0; h; i++, h = h->next)
-        arguments[i] = h->arg;
-
-    arguments[i] = NULL;
-
-    return (arguments);
+	while (node != NULL)
+	{
+		next = node->next;
+		free(node->arg);
+		free(node);
+		node = next;
+	}
+	head = NULL;
 }
